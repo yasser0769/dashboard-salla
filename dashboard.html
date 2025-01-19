@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard and Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .navbar {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            margin: 20px;
+        }
+        .sidebar {
+            width: 20%;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .main {
+            width: 80%;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .chart {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">Dashboard and Analysis</div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>Menu</h3>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#analysis">Analysis</a>
+        </div>
+
+        <div class="main">
+            <section id="dashboard">
+                <h2>Dashboard</h2>
+                <p>Overview of the uploaded CSV data:</p>
+                <div id="table-container">Loading...</div>
+            </section>
+
+            <section id="analysis">
+                <h2>Analysis</h2>
+                <p>Key insights and visualizations:</p>
+                <div class="chart" id="chart-container">Loading...</div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/mnt/data/344de62d-958d-4aad-b8ca-f857fef51bab.csv')
+                .then(response => response.text())
+                .then(csvText => {
+                    const rows = csvText.split('\n').map(row => row.split(','));
+
+                    // Render table
+                    const tableContainer = document.getElementById('table-container');
+                    const table = document.createElement('table');
+
+                    rows.forEach((row, index) => {
+                        const tr = document.createElement('tr');
+                        row.forEach(cell => {
+                            const td = document.createElement(index === 0 ? 'th' : 'td');
+                            td.textContent = cell;
+                            tr.appendChild(td);
+                        });
+                        table.appendChild(tr);
+                    });
+                    tableContainer.innerHTML = '';
+                    tableContainer.appendChild(table);
+
+                    // Render chart (Example: Bar Chart)
+                    const labels = rows[0].slice(1);
+                    const dataValues = rows[1].slice(1).map(Number);
+
+                    const ctx = document.getElementById('chart-container').appendChild(document.createElement('canvas')).getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: rows[1][0],
+                                data: dataValues,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('table-container').textContent = 'Error loading data.';
+                    document.getElementById('chart-container').textContent = 'Error loading data.';
+                    console.error('Error fetching CSV:', error);
+                });
+        });
+    </script>
+</body>
+</html>
