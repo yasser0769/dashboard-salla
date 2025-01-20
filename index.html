@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard and Analysis</title>
+    <title>City and Payment Methods Analysis</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,45 +18,11 @@
             text-align: center;
         }
         .container {
-            display: flex;
-            flex-direction: row;
             margin: 20px;
-        }
-        .sidebar {
-            width: 20%;
-            background-color: #333;
-            color: white;
-            padding: 20px;
-        }
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 10px;
-            text-decoration: none;
-        }
-        .sidebar a:hover {
-            background-color: #575757;
-        }
-        .main {
-            width: 80%;
             padding: 20px;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
         }
         .chart {
             margin-top: 20px;
@@ -66,66 +32,71 @@
 </head>
 <body>
 
-    <div class="navbar">Dashboard and Analysis</div>
+    <div class="navbar">City and Payment Methods Analysis</div>
 
     <div class="container">
-        <div class="sidebar">
-            <h3>Menu</h3>
-            <a href="#dashboard">Dashboard</a>
-            <a href="#analysis">Analysis</a>
+        <h2>Analysis</h2>
+        <p>Below are visualizations for city transactions and payment methods:</p>
+
+        <div class="chart" id="city-chart-container">
+            <h3>Transactions by City</h3>
+            <canvas id="cityChart"></canvas>
         </div>
 
-        <div class="main">
-            <section id="dashboard">
-                <h2>Dashboard</h2>
-                <p>Overview of the uploaded CSV data:</p>
-                <div id="table-container">Loading...</div>
-            </section>
-
-            <section id="analysis">
-                <h2>Analysis</h2>
-                <p>Key insights and visualizations:</p>
-                <div class="chart" id="chart-container">Loading...</div>
-            </section>
+        <div class="chart" id="payment-chart-container">
+            <h3>Transactions by Payment Method</h3>
+            <canvas id="paymentChart"></canvas>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('344de62d-958d-4aad-b8ca-f857fef51bab.csv') // Ensure the CSV file is named correctly and in the same directory
+            fetch('344de62d-958d-4aad-b8ca-f857fef51bab.csv')
                 .then(response => response.text())
                 .then(csvText => {
                     const rows = csvText.split('\n').map(row => row.split(','));
 
-                    // Render table
-                    const tableContainer = document.getElementById('table-container');
-                    const table = document.createElement('table');
+                    // Extract headers and data
+                    const headers = rows[0];
+                    const dataRows = rows.slice(1);
 
-                    rows.forEach((row, index) => {
-                        const tr = document.createElement('tr');
-                        row.forEach(cell => {
-                            const td = document.createElement(index === 0 ? 'th' : 'td');
-                            td.textContent = cell;
-                            tr.appendChild(td);
-                        });
-                        table.appendChild(tr);
+                    // Extract city and payment method data
+                    const cityIndex = headers.indexOf('City');
+                    const paymentIndex = headers.indexOf('Payment Method');
+
+                    const cityCounts = {};
+                    const paymentCounts = {};
+
+                    dataRows.forEach(row => {
+                        const city = row[cityIndex];
+                        const payment = row[paymentIndex];
+
+                        if (city) {
+                            cityCounts[city] = (cityCounts[city] || 0) + 1;
+                        }
+
+                        if (payment) {
+                            paymentCounts[payment] = (paymentCounts[payment] || 0) + 1;
+                        }
                     });
-                    tableContainer.innerHTML = '';
-                    tableContainer.appendChild(table);
 
-                    // Render chart (Example: Bar Chart)
-                    const labels = rows[0].slice(1);
-                    const dataValues = rows[1].slice(1).map(Number);
+                    // Prepare data for charts
+                    const cityLabels = Object.keys(cityCounts);
+                    const cityData = Object.values(cityCounts);
 
-                    const ctx = document.getElementById('chart-container').appendChild(document.createElement('canvas')).getContext('2d');
-                    new Chart(ctx, {
+                    const paymentLabels = Object.keys(paymentCounts);
+                    const paymentData = Object.values(paymentCounts);
+
+                    // Render city chart
+                    const cityCtx = document.getElementById('cityChart').getContext('2d');
+                    new Chart(cityCtx, {
                         type: 'bar',
                         data: {
-                            labels: labels,
+                            labels: cityLabels,
                             datasets: [{
-                                label: rows[1][0],
-                                data: dataValues,
+                                label: 'Number of Transactions',
+                                data: cityData,
                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 borderWidth: 1
@@ -140,14 +111,44 @@
                             }
                         }
                     });
+
+                    // Render payment method chart
+                    const paymentCtx = document.getElementById('paymentChart').getContext('2d');
+                    new Chart(paymentCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: paymentLabels,
+                            datasets: [{
+                                label: 'Payment Methods',
+                                data: paymentData,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true
+                        }
+                    });
                 })
                 .catch(error => {
-                    document.getElementById('table-container').textContent = 'Error loading data.';
-                    document.getElementById('chart-container').textContent = 'Error loading data.';
                     console.error('Error fetching CSV:', error);
                 });
         });
     </script>
 </body>
 </html>
-
