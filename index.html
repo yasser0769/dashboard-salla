@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,7 +93,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('/mnt/data/344de62d-958d-4aad-b8ca-f857fef51bab.csv')
+            fetch('344de62d-958d-4aad-b8ca-f857fef51bab.csv') // Ensure the CSV file is named correctly and in the same directory
                 .then(response => response.text())
                 .then(csvText => {
                     const rows = csvText.split('\n').map(row => row.split(','));
@@ -151,3 +150,4 @@
     </script>
 </body>
 </html>
+
