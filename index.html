@@ -1,154 +1,301 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City and Payment Methods Analysis</title>
+    <title>لوحة إدارة متجر سلة | Salla Management Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            box-sizing: border-box;
         }
-        .navbar {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px;
-            text-align: center;
+
+        body {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 40px 20px;
         }
+
         .container {
-            margin: 20px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        .chart {
-            margin-top: 20px;
+
+        .header {
             text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #1a202c;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            flex-shrink: 0;
+            margin: 8px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-text {
+            flex: 1;
+            padding: 0 25px 0 15px;
+            font-size: 1.15em;
+            font-weight: 700;
+            color: white;
+            text-align: right;
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Button Colors */
+        .btn-blue .btn-content {
+            background: #4f9cf9;
+        }
+
+        .btn-blue .btn-icon {
+            color: #4f9cf9;
+        }
+
+        .btn-green .btn-content {
+            background: #10b981;
+        }
+
+        .btn-green .btn-icon {
+            color: #10b981;
+        }
+
+        .btn-purple .btn-content {
+            background: #8b5cf6;
+        }
+
+        .btn-purple .btn-icon {
+            color: #8b5cf6;
+        }
+
+        .btn-orange .btn-content {
+            background: #f97316;
+        }
+
+        .btn-orange .btn-icon {
+            color: #f97316;
+        }
+
+        .btn-pink .btn-content {
+            background: #ec4899;
+        }
+
+        .btn-pink .btn-icon {
+            color: #ec4899;
+        }
+
+        .btn-cyan .btn-content {
+            background: #06b6d4;
+        }
+
+        .btn-cyan .btn-icon {
+            color: #06b6d4;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #718096;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .buttons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-text {
+                font-size: 1em;
+                padding: 0 20px 0 10px;
+            }
+
+            .btn-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
         }
     </style>
 </head>
 <body>
-
-    <div class="navbar">City and Payment Methods Analysis</div>
-
     <div class="container">
-        <h2>Analysis</h2>
-        <p>Below are visualizations for city transactions and payment methods:</p>
-
-        <div class="chart" id="city-chart-container">
-            <h3>Transactions by City</h3>
-            <canvas id="cityChart"></canvas>
+        <div class="header">
+            <h1>لوحة إدارة متجر سلة</h1>
+            <p>إدارة شاملة للمنتجات والطلبات</p>
         </div>
 
-        <div class="chart" id="payment-chart-container">
-            <h3>Transactions by Payment Method</h3>
-            <canvas id="paymentChart"></canvas>
+        <!-- Export Section -->
+        <div class="section">
+            <h2 class="section-title">📤 تصدير البيانات من المتجر</h2>
+            <div class="buttons-grid">
+                <a href="https://s.salla.sa/export/product-quantities?type=xlsx" class="btn btn-blue" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">📊</div>
+                        <div class="btn-text">تصدير الكميات</div>
+                    </div>
+                </a>
+                <a href="https://s.salla.sa/export/product-prices?type=xlsx" class="btn btn-green" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">💰</div>
+                        <div class="btn-text">تصدير الأسعار</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Import Section -->
+        <div class="section">
+            <h2 class="section-title">📥 رفع البيانات إلى المتجر</h2>
+            <div class="buttons-grid">
+                <a href="https://s.salla.sa/import/product-prices" class="btn btn-purple" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">💵</div>
+                        <div class="btn-text">رفع الأسعار الجديدة</div>
+                    </div>
+                </a>
+                <a href="https://s.salla.sa/import/product-quantities" class="btn btn-pink" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">📦</div>
+                        <div class="btn-text">رفع الكميات الجديدة</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Tools Section -->
+        <div class="section">
+            <h2 class="section-title">🛠️ أدوات التعديل والمعالجة</h2>
+            <div class="buttons-grid">
+                <a href="https://yasser0769.github.io/SALLA-PRICE-TOOL/" class="btn btn-blue" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">🔧</div>
+                        <div class="btn-text">أداة تعديل الأسعار</div>
+                    </div>
+                </a>
+                <a href="https://yasser0769.github.io/SALLA-QUANTITY-TOOL/" class="btn btn-green" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">⚙️</div>
+                        <div class="btn-text">أداة تعديل الكميات</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Customer Orders Section -->
+        <div class="section">
+            <h2 class="section-title">📋 إدارة طلبات العملاء</h2>
+            <div class="buttons-grid">
+                <a href="https://s.salla.sa/orders" class="btn btn-purple" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">🛒</div>
+                        <div class="btn-text">صفحة طلبات العملاء</div>
+                    </div>
+                </a>
+                <a href="https://order-converter-rho.vercel.app/" class="btn btn-pink" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">📄</div>
+                        <div class="btn-text">تحويل الطلبات لملف CSV</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Supplier Section -->
+        <div class="section">
+            <h2 class="section-title">🏭 إدارة المورد - FragranceX</h2>
+            <div class="buttons-grid">
+                <a href="https://www.fragrancex.com/customeraccount/_tofile_true-am-cid_frgxexcel__wholesale_pricelisthtml.html" class="btn btn-cyan" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">📋</div>
+                        <div class="btn-text">تحميل قائمة الأسعار</div>
+                    </div>
+                </a>
+                <a href="https://www.fragrancex.com/customeraccount/order_upload" class="btn btn-orange" target="_blank">
+                    <div class="btn-content">
+                        <div class="btn-icon">🚚</div>
+                        <div class="btn-text">رفع الطلبات</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            تم التصميم لإدارة متجرك بكفاءة واحترافية
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('344de62d-958d-4aad-b8ca-f857fef51bab.csv')
-                .then(response => response.text())
-                .then(csvText => {
-                    const rows = csvText.split('\n').map(row => row.split(','));
-
-                    // Extract headers and data
-                    const headers = rows[0];
-                    const dataRows = rows.slice(1);
-
-                    // Extract city and payment method data
-                    const cityIndex = headers.indexOf('City');
-                    const paymentIndex = headers.indexOf('Payment Method');
-
-                    const cityCounts = {};
-                    const paymentCounts = {};
-
-                    dataRows.forEach(row => {
-                        const city = row[cityIndex];
-                        const payment = row[paymentIndex];
-
-                        if (city) {
-                            cityCounts[city] = (cityCounts[city] || 0) + 1;
-                        }
-
-                        if (payment) {
-                            paymentCounts[payment] = (paymentCounts[payment] || 0) + 1;
-                        }
-                    });
-
-                    // Prepare data for charts
-                    const cityLabels = Object.keys(cityCounts);
-                    const cityData = Object.values(cityCounts);
-
-                    const paymentLabels = Object.keys(paymentCounts);
-                    const paymentData = Object.values(paymentCounts);
-
-                    // Render city chart
-                    const cityCtx = document.getElementById('cityChart').getContext('2d');
-                    new Chart(cityCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: cityLabels,
-                            datasets: [{
-                                label: 'Number of Transactions',
-                                data: cityData,
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-
-                    // Render payment method chart
-                    const paymentCtx = document.getElementById('paymentChart').getContext('2d');
-                    new Chart(paymentCtx, {
-                        type: 'pie',
-                        data: {
-                            labels: paymentLabels,
-                            datasets: [{
-                                label: 'Payment Methods',
-                                data: paymentData,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching CSV:', error);
-                });
-        });
-    </script>
 </body>
 </html>
